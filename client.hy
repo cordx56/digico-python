@@ -1,8 +1,6 @@
 
-(import os sys traceback discord)
+(import os sys traceback)
 (import [sentence2vec [Sentence2Vec]])
-
-(setv client (discord.Client))
 
 (setv docsFile (. sys argv [2]))
 
