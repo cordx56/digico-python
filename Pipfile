@@ -12,6 +12,7 @@ mecab-python3 = "*"
 flask = "*"
 discord = "*"
 numpy = "*"
+hy = "*"
 
 [requires]
 python_version = "3.7"
