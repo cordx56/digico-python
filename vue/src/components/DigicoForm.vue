@@ -6,10 +6,11 @@
       b-form-group(label="Question: ")
         b-form-input(v-model="form.qtext", type="text", required)
       b-form-group
+        h4 音声認識
         p
-          b-button(@click="runVoiceIdle", variant="primary", :disabled="!voiceRecog.obj") 音声認識待機
-        p
-          b-button(@click="runVoiceQuestion", variant="primary", :disabled="!voiceRecog.obj") 音声認識実行
+          b-button.mr-3(@click="runVoiceIdle", variant="primary", :disabled="!voiceRecog.obj") 認識待機
+          b-button.mr-3(@click="runVoiceQuestion", variant="primary", :disabled="!voiceRecog.obj") 認識実行
+          b-button(@click="stopVoiceRecog", variant="danger", :disabled="!voiceRecog.obj") 認識停止
       b-form-group
         b-button(type="submit", variant="primary", :disabled="voiceRecog.running") Question
 </template>
@@ -93,6 +94,13 @@ export default {
       }).catch((error) => {
         window.alert(String(error))
       })
+    },
+    stopVoiceRecog() {
+      try {
+        this.voiceRecog.obj.stop()
+      } catch (e) {
+        console.log(String(e))
+      }
     }
   },
   mounted() {
