@@ -7,10 +7,12 @@
         b-form-input(v-model="form.qtext", type="text", required)
       b-form-group
         h4 音声認識
-        p
-          b-button.mr-3(@click="runVoiceIdle", variant="primary", :disabled="!voiceRecog.obj") 認識待機
-          b-button.mr-3(@click="runVoiceQuestion", variant="primary", :disabled="!voiceRecog.obj") 認識実行
-          b-button(@click="stopVoiceRecog", variant="danger", :disabled="!voiceRecog.obj") 認識停止
+        p(v-if="voiceRecog.obj")
+          b-button.mr-3(@click="runVoiceIdle", variant="primary") 認識待機
+          b-button.mr-3(@click="runVoiceQuestion", variant="primary") 認識実行
+          b-button(@click="stopVoiceRecog", variant="danger") 認識停止
+        p(v-else)
+          | 非対応ブラウザです
       b-form-group
         b-button(type="submit", variant="primary", :disabled="voiceRecog.running") Question
 </template>
