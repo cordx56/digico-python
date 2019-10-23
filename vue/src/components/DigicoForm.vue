@@ -67,9 +67,6 @@ export default {
         this.form.qtext = res[0].transcript
         if (res.isFinal) {
           this.getAnswer()
-          var ae = new Audio();
-          ae.src = "/voice?text=" + encodeURI(this.answer[0].a)
-          ae.play()
           if (this.idling) this.runVoiceIdle()
         }
       }
@@ -87,6 +84,9 @@ export default {
       }).then((response) => {
         if (response.data.status) {
           this.answer = response.data.answer.slice(0, 4)
+          var ae = new Audio();
+          ae.src = "/voice?text=" + encodeURI(this.answer[0]['a'])
+          ae.play()
         } else {
           window.alert(response.data.message)
         }
