@@ -8,6 +8,8 @@ services:
       - ./log/uwsgi:/log/uwsgi
     ports:
       - 5000:5000
+    networks:
+      - internal_network
     environment:
       TZ: Asia/Tokyo
     restart: always
@@ -24,6 +26,9 @@ services:
       - ./vue:/vue:ro
     links:
       - digicoapi
+    networks:
+      - internal_network
+      - external_network
 #    ports:
 #      - 80:80
     environment:
@@ -38,3 +43,9 @@ services:
       cd /scripts &&
       yarn install --force &&
       yarn run build"
+
+networks:
+  internal_network:
+    internal: true
+  external_network:
+    external: true
