@@ -1,7 +1,16 @@
 <template lang="pug">
   .digico
     b-card.mb-3(header="実行結果", header-text-variant="white", header-bg-variant="primary", align="center", v-if="answer", :title="answer[0]['a']")
-      b-table(striped, :items="answer")
+      b-table-simple(striped)
+        b-tbody(v-for="(ans, index) in answer")
+          b-tr
+            b-th(rowspan="2") {{ index + 1 }}
+            b-td(colspan="2") {{ ans['a'] }}
+          b-tr
+            b-td(style="position: relative;")
+              .bgCosBar(:style="'width: ' + (ans['cos'] * 100) + '%;'")
+              .cosText(style="position: relative;") {{ ans['cos'] }}
+            b-td {{ ans['q'] }}
     b-form(@submit.prevent="getAnswer")
       b-form-group(label="Question: ")
         b-form-input(v-model="form.qtext", type="text", required)
@@ -86,7 +95,7 @@ export default {
         }
       }).then((response) => {
         if (response.data.status) {
-          this.answer = response.data.answer.slice(0, 4)
+          this.answer = response.data.answer.slice(0, 5)
           var ae = new Audio();
           ae.src = "/voice?text=" + encodeURI(this.answer[0]['a'])
           ae.play()
@@ -112,3 +121,13 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.bgCosBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  background-color: #9cf;
+}
+</style>
