@@ -6,7 +6,10 @@
       b-form-group(label="Question: ")
         b-form-input(v-model="form.qtext", type="text", required)
       b-form-group
-        b-button(@click="runVoiceIdle", variant="primary", :disabled="!voiceRecog.obj") 音声認識実行
+        p
+          b-button(@click="runVoiceIdle", variant="primary", :disabled="!voiceRecog.obj") 音声認識待機
+        p
+          b-button(@click="runVoiceQuestion", variant="primary", :disabled="!voiceRecog.obj") 音声認識実行
       b-form-group
         b-button(type="submit", variant="primary", :disabled="voiceRecog.running") Question
 </template>
@@ -32,30 +35,46 @@ export default {
   },
   methods: {
     runVoiceIdle() {
-      this.voiceRecog.obj.stop()
+      try {
+        this.voiceRecog.obj.stop()
+      } catch (e) {
+        console.log(String(e))
+      }
       this.voiceRecog.obj.continuous = true
       this.voiceRecog.obj.onresult = (event) => {
         var res = event.results[event.results.length - 1][0].transcript
         this.form.qtext = res
-        if ((res.indexOf('ねえ') > -1 || res.indexOf('ねぇ') > -1) && (res.indexOf('デジコ') > -1)) {
+        if ((res.indexOf('ねえ') > -1 || res.indexOf('ねぇ') > -1) && (res.indexOf('でじこ') > -1 || res.indexOf('デジコ') > -1)) {
           this.runVoiceQuestion()
         }
       }
       this.idling = true
-      this.voiceRecog.obj.start()
+      try {
+        this.voiceRecog.obj.start()
+      } catch (e) {
+        console.log(String(e))
+      }
     },
     runVoiceQuestion() {
-      this.voiceRecog.obj.stop()
+      try {
+        this.voiceRecog.obj.stop()
+      } catch (e) {
+        console.log(String(e))
+      }
       this.voiceRecog.obj.continuous = false
       this.voiceRecog.obj.onresult = (event) => {
         var res = event.results[event.results.length - 1]
         this.form.qtext = res[0].transcript
         if (res.isFinal) {
           this.getAnswer()
-          this.runVoiceIdle()
+          if (this.idling) this.runVoiceIdle()
         }
       }
-      this.voiceRecog.obj.start()
+      try {
+        this.voiceRecog.obj.start()
+      } catch (e) {
+        console.log(String(e))
+      }
     },
     getAnswer() {
       this.$axios.get('/api/v1/answer', {
