@@ -15,7 +15,7 @@ services:
       /bin/bash -c "
       cd /scripts &&
       uwsgi --enable-threads --ini /scripts/uwsgi.ini"
-  nginxserver:
+  digiconginx:
     image: nginx:1.17
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
@@ -24,8 +24,8 @@ services:
       - ./vue:/vue:ro
     links:
       - digicoapi
-    ports:
-      - 80:80
+#    ports:
+#      - 80:80
     environment:
       TZ: Asia/Tokyo
     restart: always
