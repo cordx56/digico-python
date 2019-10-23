@@ -17,6 +17,11 @@ services:
       /bin/bash -c "
       cd /scripts &&
       uwsgi --enable-threads --ini /scripts/uwsgi.ini"
+  openjtalkapi:
+    build: ./openjtalk
+    networks:
+      - internal_network
+    restart: always
   digiconginx:
     image: nginx:1.17
     volumes:

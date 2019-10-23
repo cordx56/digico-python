@@ -67,6 +67,9 @@ export default {
         this.form.qtext = res[0].transcript
         if (res.isFinal) {
           this.getAnswer()
+          var ae = new Audio();
+          ae.src = "/voice?text=" + encodeURI(this.answer[0].a)
+          ae.play()
           if (this.idling) this.runVoiceIdle()
         }
       }
