@@ -1,11 +1,11 @@
 <template lang="pug">
   .aboutInfo
-    h1 About
+    h3 About
     p Author: cordx56
     p 
       | Repository: 
-      a(href="https://github.com/cordx56/digico-python") cordx56/digico-python
-    h1 Software
+      a(href="https://github.com/cordx56/digico-python", target="_blank") cordx56/digico-python
+    h3 Software
     b-table(:items="depend")
 </template>
 
@@ -15,7 +15,7 @@ export default {
     return {
       depend: [
         {
-          name: '<a href="http://open-jtalk.sp.nitech.ac.jp/">Open JTalk</a>'
+          name: 'Open JTalk'
         }
       ]
     }

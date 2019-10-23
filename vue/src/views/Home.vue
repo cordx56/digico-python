@@ -6,7 +6,8 @@
       b-col(cols="12", lg="8")
         DigicoForm
     b-row
-      AboutInfo
+      b-col(cols="12")
+        AboutInfo
 </template>
 
 <script>
