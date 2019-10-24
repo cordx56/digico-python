@@ -45,16 +45,10 @@ export default {
   },
   methods: {
     runVoiceIdle() {
-      try {
-        this.voiceRecog.obj.stop()
-      } catch (e) {
-        console.log(String(e))
-      }
-      this.voiceRecog.obj.continuous = true
       this.voiceRecog.obj.onresult = (event) => {
         var res = event.results[event.results.length - 1][0].transcript
         this.form.qtext = res
-        if ((res.indexOf('ねえ') > -1 || res.indexOf('ねぇ') > -1) && (res.indexOf('でじこ') > -1 || res.indexOf('デジコ') > -1)) {
+        if ((res.indexOf('でじこ') > -1 || res.indexOf('デジコ') > -1)) {
           this.runVoiceQuestion()
         }
       }
@@ -66,12 +60,7 @@ export default {
       }
     },
     runVoiceQuestion() {
-      try {
-        this.voiceRecog.obj.stop()
-      } catch (e) {
-        console.log(String(e))
-      }
-      this.voiceRecog.obj.continuous = false
+      this.voiceRecog.obj.abort()
       this.voiceRecog.obj.onresult = (event) => {
         var res = event.results[event.results.length - 1]
         this.form.qtext = res[0].transcript
@@ -103,19 +92,18 @@ export default {
       }).catch((error) => {
         window.alert(String(error))
       })
-    },
-    stopVoiceRecog() {
-      try {
-        this.voiceRecog.obj.stop()
-      } catch (e) {
-        console.log(String(e))
-      }
     }
   },
   mounted() {
     this.voiceRecog.obj = new this.voiceRecog.cls()
     this.voiceRecog.obj.interimResults = true
+    this.voiceRecog.obj.continuous = true
     this.voiceRecog.obj.lang = 'ja-JP'
+    this.voiceRecog.obj.onend = () => {
+      console.log('Restart voice recognition...')
+      this.voiceRecog.obj.start()
+    }
+    this.runVoiceIdle()
   }
 }
 </script>
