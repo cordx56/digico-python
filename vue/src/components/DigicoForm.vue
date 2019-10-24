@@ -13,9 +13,9 @@
             b-td {{ ans['q'] }}
     b-form(@submit.prevent="getAnswer")
       b-form-group(label="Question: ")
-        b-form-input(v-model="form.qtext", type="text", required)
+        b-form-input(v-model="form.qtext", type="text", required, :disabled="this.voiceRecog.running")
       b-form-group
-        b-button(type="submit", variant="primary", :disabled="voiceRecog.running") 質問送信
+        b-button(type="submit", variant="primary", :disabled="this.voiceRecog.running") {{ form.submit }}
     b-card(header="音声認識", header-text-variant="white", header-bg-variant="info", align="center")
       span(v-if="voiceRecog.obj")
         b-button.mr-4(@click="runVoiceIdle", variant="success") 認識待機
@@ -33,7 +33,8 @@ export default {
     return {
       answer: null,
       form: {
-        qtext: ''
+        qtext: '',
+        submit: '質問送信'
       },
       voiceRecog: {
         cls: window.SpeechRecognition || window.webkitSpeechRecognition,
@@ -58,6 +59,8 @@ export default {
         }
       }
       this.idling = true
+      this.voiceRecog.running = true
+      this.form.submit = '待機中'
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -71,9 +74,11 @@ export default {
         this.form.qtext = res[0].transcript
         if (res.isFinal) {
           this.getAnswer()
-          if (this.idling) this.runVoiceIdle()
+          this.runVoiceIdle()
         }
       }
+      this.voiceRecog.running = true
+      this.form.submit = '認識中'
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -82,6 +87,8 @@ export default {
     },
     stopVoiceRecog() {
       this.voiceRecog.obj.onend = null
+      this.voiceRecog.running = false
+      this.form.submit = '質問送信'
       this.voiceRecog.obj.abort()
     },
     getAnswer() {
@@ -108,7 +115,7 @@ export default {
     this.voiceRecog.obj.interimResults = true
     this.voiceRecog.obj.continuous = true
     this.voiceRecog.obj.lang = 'ja-JP'
-    this.runVoiceIdle()
+    //this.runVoiceIdle()
   }
 }
 </script>
