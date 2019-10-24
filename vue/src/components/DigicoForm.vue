@@ -15,15 +15,13 @@
       b-form-group(label="Question: ")
         b-form-input(v-model="form.qtext", type="text", required)
       b-form-group
-        h4 音声認識
-        p(v-if="voiceRecog.obj")
-          b-button.mr-3(@click="runVoiceIdle", variant="primary") 認識待機
-          b-button.mr-3(@click="runVoiceQuestion", variant="primary") 認識実行
-          b-button(@click="stopVoiceRecog", variant="danger") 認識停止
-        p(v-else)
-          | 非対応ブラウザです
-      b-form-group
-        b-button(type="submit", variant="primary", :disabled="voiceRecog.running") Question
+        b-button(type="submit", variant="primary", :disabled="voiceRecog.running") 質問送信
+    b-card(header="音声認識", header-text-variant="white", header-bg-variant="info", align="center")
+      span(v-if="voiceRecog.obj")
+        b-button.mr-4(@click="runVoiceIdle", variant="success") 認識待機
+        b-button(@click="runVoiceQuestion", variant="warning") 強制実行
+      span(v-else)
+        | 非対応ブラウザです
 </template>
 
 <script>
