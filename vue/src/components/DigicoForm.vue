@@ -1,6 +1,6 @@
 <template lang="pug">
   .digico
-    b-card.mb-3(header="実行結果", header-text-variant="white", header-bg-variant="primary", align="center", v-if="answer", :title="answer[0]['a']")
+    b-card.mb-3(header="実行結果", header-text-variant="white", header-bg-variant="success", align="center", v-if="answer", :title="answer[0]['a']")
       b-table-simple(striped)
         b-tbody(v-for="(ans, index) in answer")
           b-tr
@@ -11,11 +11,11 @@
               .bgCosBar(:style="'width: ' + (ans['cos'] * 100) + '%;'")
               .cosText(style="position: relative;") {{ ans['cos'] }}
             b-td {{ ans['q'] }}
-    b-form(@submit.prevent="getAnswer")
-      b-form-group(label="Question: ")
-        b-form-input(v-model="form.qtext", type="text", required, :disabled="this.voiceRecog.running")
-      b-form-group
-        b-button(type="submit", variant="primary", :disabled="this.voiceRecog.running") {{ form.submit }}
+    b-card.mb-3(header="質問", header-text-variant="white", header-bg-variant="primary", align="center")
+      b-form(@submit.prevent="getAnswer")
+        b-form-group
+          b-form-input(v-model="form.qtext", type="text", required, :disabled="this.voiceRecog.running")
+        b-button(type="submit", :variant="form.submit.variant", :disabled="this.voiceRecog.running") {{ form.submit.text }}
     b-card(header="音声認識", header-text-variant="white", header-bg-variant="info", align="center")
       span(v-if="voiceRecog.obj")
         b-button.mr-4(@click="runVoiceIdle", variant="success") 認識待機
@@ -34,7 +34,10 @@ export default {
       answer: null,
       form: {
         qtext: '',
-        submit: '質問送信'
+        submit: {
+          text: '質問送信',
+          variant: 'primary'
+        }
       },
       voiceRecog: {
         cls: window.SpeechRecognition || window.webkitSpeechRecognition,
@@ -60,7 +63,8 @@ export default {
       }
       this.idling = true
       this.voiceRecog.running = true
-      this.form.submit = '待機中'
+      this.form.submit.text = '待機中'
+      this.form.submit.variant = 'primary'
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -78,7 +82,8 @@ export default {
         }
       }
       this.voiceRecog.running = true
-      this.form.submit = '認識中'
+      this.form.submit.text = '認識中'
+      this.form.submit.variant = 'danger'
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -88,7 +93,8 @@ export default {
     stopVoiceRecog() {
       this.voiceRecog.obj.onend = null
       this.voiceRecog.running = false
-      this.form.submit = '質問送信'
+      this.form.submit.text = '質問送信'
+      this.form.submit.variant = 'primary'
       this.voiceRecog.obj.abort()
     },
     getAnswer() {
