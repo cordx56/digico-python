@@ -19,7 +19,8 @@
     b-card(header="音声認識", header-text-variant="white", header-bg-variant="info", align="center")
       span(v-if="voiceRecog.obj")
         b-button.mr-4(@click="runVoiceIdle", variant="success") 認識待機
-        b-button(@click="runVoiceQuestion", variant="warning") 強制実行
+        b-button.mr-4(@click="runVoiceQuestion", variant="warning") 強制実行
+        b-button(@click="stopVoiceRecog", variant="danger") 認識停止
       span(v-else)
         | 非対応ブラウザです
 </template>
@@ -45,6 +46,10 @@ export default {
   },
   methods: {
     runVoiceIdle() {
+      this.voiceRecog.obj.onend = () => {
+        console.log('Restart voice recognition...')
+        this.voiceRecog.obj.start()
+      }
       this.voiceRecog.obj.onresult = (event) => {
         var res = event.results[event.results.length - 1][0].transcript
         this.form.qtext = res
@@ -75,6 +80,10 @@ export default {
         console.log(String(e))
       }
     },
+    stopVoiceRecog() {
+      this.voiceRecog.obj.onend = null
+      this.voiceRecog.obj.abort()
+    },
     getAnswer() {
       this.$axios.get('/api/v1/answer', {
         params: {
@@ -99,10 +108,6 @@ export default {
     this.voiceRecog.obj.interimResults = true
     this.voiceRecog.obj.continuous = true
     this.voiceRecog.obj.lang = 'ja-JP'
-    this.voiceRecog.obj.onend = () => {
-      console.log('Restart voice recognition...')
-      this.voiceRecog.obj.start()
-    }
     this.runVoiceIdle()
   }
 }
