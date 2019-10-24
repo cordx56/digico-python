@@ -1,11 +1,15 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+  #app
+    b-navbar(toggleable="md", type="dark", variant="dark")
+      b-container
+        b-navbar-brand(href="https://digico.cordx.net/") digiCo
+        b-navbar-toggle(target="nav-collapse")
+        b-collapse#nav-collapse(is-nav)
+          b-navbar-nav.ml-auto
+            b-nav-item(to="/about") About
+            b-nav-item(href="https://github.com/cordx56/digico-python", target="_blank")
+              | Repository
+    router-view.mt-3
 </template>
 
 <style lang="scss">
@@ -17,16 +21,4 @@
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
 </style>
