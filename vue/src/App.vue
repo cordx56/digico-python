@@ -9,7 +9,7 @@
             b-nav-item(to="/about") About
             b-nav-item(href="https://github.com/cordx56/digico-python", target="_blank")
               | Repository
-    router-view.mt-3
+    router-view.mt-4
 </template>
 
 <style lang="scss">

@@ -1,7 +1,6 @@
 <template lang="pug">
   .aboutInfo
     h3 About
-    p Author: cordx56
     p 
       | Repository: 
       a(href="https://github.com/cordx56/digico-python", target="_blank") cordx56/digico-python
