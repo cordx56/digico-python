@@ -13,6 +13,8 @@
             b-td {{ ans['q'] }}
     b-card.mb-3(header="質問", header-text-variant="white", header-bg-variant="primary", align="center")
       b-form(@submit.prevent="getAnswer")
+        b-form-group(label="計算手法")
+          b-form-select(v-model="form.engineOpt.selected", :options="form.engineOpt.options", size="sm")
         b-form-group
           b-form-input(v-model="form.qtext", type="text", required, :disabled="this.voiceRecog.running")
         b-button(type="submit", :variant="form.submit.variant", :disabled="this.voiceRecog.running") {{ form.submit.text }}
@@ -37,6 +39,13 @@ export default {
         submit: {
           text: '質問送信',
           variant: 'primary'
+        },
+        engineOpt: {
+          selected: 'trz',
+          options: [
+            { value: 'trz', text: 'Trazo (Default)' },
+            { value: 'ibp', text: 'Ibpro' }
+          ]
         }
       },
       voiceRecog: {
@@ -100,7 +109,8 @@ export default {
     getAnswer() {
       this.$axios.get('/api/v1/answer', {
         params: {
-          q: this.form.qtext
+          q: this.form.qtext,
+          engine: this.form.engineOpt.selected
         }
       }).then((response) => {
         if (response.data.status) {
