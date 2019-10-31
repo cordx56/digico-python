@@ -3,17 +3,26 @@ from mecabobj import MecabObj
 import re
 from gensim.models import word2vec
 import numpy as np
+import CaboCha
+
+w2v = None
 
 class Sentence2Vec:
     w2v = None
     mec = None
+    cab = None
     idf = {}
     qaDic = {}
     calcedVec = {}
-    def __init__(self, fileName = None, mecabOption = ""):
+    def __init__(self, fileName = None, mecabOption = "", cabochaOption = None):
+        global w2v
         self.mec = MecabObj(mecabOption)
-        if fileName:
-            self.w2v = word2vec.Word2Vec.load(fileName).wv
+        self.cab = CaboCha.Parser(mecabOption if cabochaOption is None else cabochaOption)
+        if w2v is not None:
+            self.w2v = w2v
+        elif fileName:
+            w2v = word2vec.Word2Vec.load(fileName).wv
+            self.w2v = w2v
 
     def wordFilter(self, wc):
         return wc in ["名詞", "動詞", "形容詞"]
@@ -22,18 +31,6 @@ class Sentence2Vec:
     def genRandVec(self):
         vec = np.random.rand(200)
         vec /= np.linalg.norm(vec)
-        return vec
-    def getVec(self, sen):
-        if sen in self.calcedVec:
-            return self.calcedVec[sen]
-        vec = np.zeros(200)
-        parsed = self.mec.parse(sen)
-        for word in parsed:
-            if word[0] not in self.w2v:
-                self.w2v[word[0]] = self.genRandVec()
-            vec += self.getIDF(word[0]) * self.w2v[word[0]]
-        vec /= np.linalg.norm(vec)
-        self.calcedVec[sen] = vec
         return vec
     def answers(self, sentence):
         vec = self.getVec(sentence)
@@ -80,3 +77,39 @@ class Sentence2Vec:
                 f.write(key + "\n")
                 for q in val:
                     f.write("\t" + q + "\n")
+
+class Ibpro(Sentence2Vec):
+    def getVec(self, sen):
+        if sen in self.calcedVec:
+            return self.calcedVec[sen]
+        vec = np.zeros(200)
+        parsed = self.mec.parse(sen)
+        for word in parsed:
+            if word[0] not in self.w2v:
+                self.w2v[word[0]] = self.genRandVec()
+            vec += self.getIDF(word[0]) * self.w2v[word[0]]
+        vec /= np.linalg.norm(vec)
+        self.calcedVec[sen] = vec
+        return vec
+
+class Trazo(Sentence2Vec):
+    def getVec(self, sen):
+        if sen in self.calcedVec:
+            return self.calcedVec[sen]
+        vec = np.zeros(200)
+        parsed = self.cab.parse(sen)
+        chunkLink = -1
+        for i in range(parsed.size()):
+            token = parsed.token(i)
+            if token.chunk is not None:
+                chunkLink = token.chunk.link
+            feat = token.feature.split(",")
+            coe = 1
+            if -1 < chunkLink:
+                coe = 2 if feat[0] == "名詞" else 1.5 if self.wordFilter(feat[0]) else 1
+            if token.surface not in self.w2v:
+                self.w2v[token.surface] = self.genRandVec()
+            vec += coe * self.getIDF(token.surface) * self.w2v[token.surface]
+        vec /= np.linalg.norm(vec)
+        self.calcedVec[sen] = vec
+        return vec
