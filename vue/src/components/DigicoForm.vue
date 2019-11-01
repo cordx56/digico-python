@@ -74,6 +74,7 @@ export default {
       this.voiceRecog.running = true
       this.form.submit.text = '待機中'
       this.form.submit.variant = 'primary'
+      this.$emit('updateImage', 'SAKURAdigico-sleep.png')
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -93,6 +94,7 @@ export default {
       this.voiceRecog.running = true
       this.form.submit.text = '認識中'
       this.form.submit.variant = 'danger'
+      this.$emit('updateImage', 'SAKURAdigico-oecm.png')
       try {
         this.voiceRecog.obj.start()
       } catch (e) {
@@ -104,6 +106,7 @@ export default {
       this.voiceRecog.running = false
       this.form.submit.text = '質問送信'
       this.form.submit.variant = 'primary'
+      this.$emit('updateImage', 'SAKURAdigico-sleep.png')
       this.voiceRecog.obj.abort()
     },
     getAnswer() {
@@ -117,6 +120,10 @@ export default {
           this.answer = response.data.answer.slice(0, 5)
           var ae = new Audio();
           ae.src = "/voice?text=" + encodeURI(this.answer[0]['a'])
+          this.$emit('updateImage', 'SAKURAdigico-oeom.png')
+          ae.onended = () => {
+            this.$emit('updateImage', 'SAKURAdigico-sleep.png')
+          }
           ae.play()
         } else {
           window.alert(response.data.message)
