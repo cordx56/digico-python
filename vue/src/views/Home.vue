@@ -1,12 +1,10 @@
 <template lang="pug">
-  b-container
+  b-container.text-center
     b-row.mb-4
       b-col.mb-3(cols="12", lg="4")
         img(:src="mainImageSrc")
       b-col(cols="12", lg="8")
-        DigicoForm(@updateImage="updateMainImage")
-    b-row
-      b-col(cols="12")
+        DigicoForm.mb-4(@updateImage="updateMainImage")
         AboutInfo
 </template>
 

@@ -1,8 +1,8 @@
 <template lang="pug">
   #app
-    b-navbar(toggleable="md", type="dark", variant="dark")
+    b-navbar(toggleable="md", type="dark", variant="dark", sticky)
       b-container
-        b-navbar-brand(href="https://digico.cordx.net/") digiCo
+        b-navbar-brand(to="/") digiCo NLP
         b-navbar-toggle(target="nav-collapse")
         b-collapse#nav-collapse(is-nav)
           b-navbar-nav.ml-auto

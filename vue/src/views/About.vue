@@ -1,5 +1,5 @@
 <template lang="pug">
-  .about
+  b-container.about
     AboutInfo
 </template>
 
