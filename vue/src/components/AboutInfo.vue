@@ -4,6 +4,9 @@
     p 
       | Repository: 
       a(href="https://github.com/cordx56/digico-python", target="_blank") cordx56/digico-python
+    p 
+      | digiCo portal: 
+      a(href="https://digico.digicre.net/", target="_blank") digiCo Project
     h3 Collaborator
     b-table-simple
       b-tbody
