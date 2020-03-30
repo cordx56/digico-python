@@ -5,9 +5,9 @@ services:
     volumes:
       - ./:/scripts:ro
       - ./data:/data:ro
-      - ./log/uwsgi:/log/uwsgi
-    ports:
-      - 5000:5000
+      - ./log/gunicorn:/log/gunicorn
+#    ports:
+#      - 5000:5000
     networks:
       - internal_network
     environment:
@@ -16,7 +16,7 @@ services:
     command: >
       /bin/bash -c "
       cd /scripts &&
-      uwsgi --enable-threads --ini /scripts/uwsgi.ini"
+      gunicorn -c /scripts/gunicorn.py server:app"
   openjtalkapi:
     build: ./openjtalk
     networks:
