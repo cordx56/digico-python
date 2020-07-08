@@ -1,5 +1,7 @@
 <template lang="pug">
   .digico
+    b-card.mb-3(v-if="loading", header="読み込み中", header-text-variant="white", header-bg-variant="secondary")
+      span 計算中
     b-card.mb-3(header="実行結果", header-text-variant="white", header-bg-variant="success", align="center", v-if="answer", :title="answer[0]['a']")
       b-table-simple(striped)
         b-tbody(v-for="(ans, index) in answer")
@@ -34,6 +36,7 @@ export default {
   data() {
     return {
       answer: null,
+      loading: false,
       form: {
         qtext: '',
         submit: {
@@ -110,6 +113,8 @@ export default {
       this.voiceRecog.obj.abort()
     },
     getAnswer() {
+      this.loading = true
+      this.answer = null
       this.$axios.get('/api/v1/answer', {
         params: {
           q: this.form.qtext,
@@ -117,6 +122,7 @@ export default {
         }
       }).then((response) => {
         if (response.data.status) {
+          this.loading = false
           this.answer = response.data.answer.slice(0, 5)
           var ae = new Audio();
           ae.src = "/voice?text=" + encodeURI(this.answer[0]['a'])
